@@ -77,9 +77,9 @@ li {
   position: absolute;
   width: 100%;
   height: 0px;
-  opacity: 0;
+  opacity: 1;
   background: #53ade2;
-  transition: all 0.4s ease 0s;
+  transition: all 1s ease 0s;
   /* transition: opacity 1.5s ease 0s; */
   /* -moz-transition: height 1s; Firefox 4 */
   /* -webkit-transition: height 1s; /* Safari 和 Chrome */
@@ -151,29 +151,29 @@ li {
     <div class="head-right" @click="prev">&gt;&gt;</div>
     <transition v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave">
       <div class="fall-box" v-show="show">
-        <!-- <div class="fall-box-cont"> -->
-        <div v-for="(l2,index) in l2data" :key="index" class="fall-nav-l2">
-          <h3 class="l2title">
-            <div class="l2icon">
-              <i class="icon iconfont icon-all">
-              </i>
-            </div>{{l2.title}}
-          </h3>
-          <ul class="l2list">
-            <li class="l2item" v-for="(l3,index) in l3data" :key="index">
-              <div class="item-main">
-                <a v-if="l3.url">{{l3.title}}</a>
-                <span v-else>{{l3.title}}</span>
-              </div>
-              <div class="item-sub">
-                <div v-for="(l4,index) in l4data" :key="index">
-                  <a v-if="l4.url">{{l4.title}}</a>
-                  <span v-else>{{l4.title}}</span>
+        <div class="fall-box-cont">
+          <div v-for="(l2,index) in l2data" :key="index" class="fall-nav-l2">
+            <h3 class="l2title">
+              <div class="l2icon">
+                <i class="icon iconfont icon-all">
+                </i>
+              </div>{{l2.title}}
+            </h3>
+            <ul class="l2list">
+              <li class="l2item" v-for="(l3,index) in l3data" :key="index">
+                <div class="item-main">
+                  <a v-if="l3.url">{{l3.title}}</a>
+                  <span v-else>{{l3.title}}</span>
                 </div>
-              </div>
-            </li>
-          </ul>
-          <!-- </div> -->
+                <div class="item-sub">
+                  <div v-for="(l4,index) in l4data" :key="index">
+                    <a v-if="l4.url">{{l4.title}}</a>
+                    <span v-else>{{l4.title}}</span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </transition>
@@ -206,7 +206,7 @@ export default {
       this.show = false
     },
     beforeEnter: function(el) {
-      el.style.opacity = 0
+      // el.style.opacity = 0
       el.style.height = '0px'
     },
     enter: function(el, done) {
@@ -214,6 +214,7 @@ export default {
         el.style.opacity = 1
         // el.style.height = this.$el.querySelector('.fall-box-cont') + 30 + 'px'
         el.style.height = '685px'
+        done()
       }, 10)
     },
     beforeLeave: function(el, done) {

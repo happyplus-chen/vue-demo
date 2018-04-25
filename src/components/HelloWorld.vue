@@ -59,7 +59,7 @@
 <script>
 export default {
   name: 'HelloWorld',
-  data () {
+  data() {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
@@ -83,5 +83,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.hello {
+  background-image: url(../assets/big.jpg);
 }
 </style>
