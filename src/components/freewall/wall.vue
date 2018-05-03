@@ -1,13 +1,13 @@
 <template>
-    <div class="layout">
-        <i class="addcard" @click="addcard">添加</i>
-        <div id="freewall" class="free-wall">
-            <div v-for="(item,index) in data" :key="index" class="item level1" :style="item">
-                <div>{{index}}</div>
-            </div>
-        </div>
-
+  <div class="layout">
+    <i class="addcard" @click="addcard">添加</i>
+    <div id="freewall" class="free-wall">
+      <div v-for="(item,index) in data" :key="index" class="item level1" :style="item">
+        <div>{{index}}</div>
+      </div>
     </div>
+
+  </div>
 </template>
 <script>
 // import './css/font-awesome.min.css'
@@ -22,35 +22,26 @@ export default {
     return {
       wall: null,
       data: [
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '160px' },
-        { width: '320px', height: '320px' },
-        { width: '320px', height: '320px' }
+        { width: '640px', height: '160px', id: 1 },
+        { width: '320px', height: '160px', id: 2 },
+        { width: '320px', height: '160px', id: 3 },
+        { width: '320px', height: '160px', id: 4 },
+        { width: '320px', height: '320px', id: 5 },
+        { width: '320px', height: '320px', id: 6 },
+        { width: '320px', height: '320px', id: 7 },
+        { width: '320px', height: '160px', id: 8 },
+        { width: '320px', height: '160px', id: 9 },
+        { width: '320px', height: '160px', id: 10 },
+        { width: '320px', height: '320px', id: 11 },
+        { width: '320px', height: '160px', id: 12 },
+        { width: '320px', height: '320px', id: 13 },
+        { width: '320px', height: '160px', id: 14 },
+        { width: '320px', height: '320px', id: 15 },
+        { width: '320px', height: '320px', id: 16 }
         // { width: '320px', height: '160px' },
         // { width: '320px', height: '160px' }
       ],
-      colour: [
-        'rgb(142, 68, 173)',
-        'rgb(243, 156, 18)',
-        'rgb(211, 84, 0)',
-        'rgb(0, 106, 63)',
-        'rgb(41, 128, 185)',
-        'rgb(192, 57, 43)',
-        'rgb(135, 0, 0)',
-        'rgb(39, 174, 96)'
-      ]
+      colour: ['#6cadb7']
     }
   },
   created() {},
@@ -66,12 +57,20 @@ export default {
 
     this.wall.reset({
       draggable: true,
+      animate: true,
+      cacheSize: true,
       selector: '.level1',
-      cellW: 320,
-      cellH: 160,
+      cellW: 180,
+      cellH: 180,
       fixSize: 0,
       gutterX: 20,
       gutterY: 10,
+      onComplete() {
+        console.log('onComplete', arguments)
+      },
+      onBlockFinish() {
+        console.log('onBlockFinish', arguments)
+      },
       onResize: function() {
         me.wall.fitZone()
       }
@@ -104,6 +103,7 @@ export default {
   watch: {
     data() {
       console.log(arguments)
+      this.wall.refesh()
     }
   }
 }

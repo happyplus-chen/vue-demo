@@ -139,48 +139,52 @@ li {
 </style>
 
 <template>
-  <div class="fall-nav">
-    <div class="fall-bar">
-      <ul class="head-ul">
-        <li class="head-item" v-for="(header,index) in data" :key="index" @mouseover="mouseover(index)" @mouseout="mouseout">
-          <a>{{header}}</a>
-        </li>
-      </ul>
-    </div>
-    <div class="head-left" @click="next">&lt;&lt;</div>
-    <div class="head-right" @click="prev">&gt;&gt;</div>
-    <transition v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave">
-      <div class="fall-box" v-show="show">
-        <div class="fall-box-cont">
-          <div v-for="(l2,index) in l2data" :key="index" class="fall-nav-l2">
-            <h3 class="l2title">
-              <div class="l2icon">
-                <i class="icon iconfont icon-all">
-                </i>
-              </div>{{l2.title}}
-            </h3>
-            <ul class="l2list">
-              <li class="l2item" v-for="(l3,index) in l3data" :key="index">
-                <div class="item-main">
-                  <a v-if="l3.url">{{l3.title}}</a>
-                  <span v-else>{{l3.title}}</span>
-                </div>
-                <div class="item-sub">
-                  <div v-for="(l4,index) in l4data" :key="index">
-                    <a v-if="l4.url">{{l4.title}}</a>
-                    <span v-else>{{l4.title}}</span>
+  <div>
+
+    <div class="fall-nav">
+      <div class="fall-bar">
+        <ul class="head-ul">
+          <li class="head-item" v-for="(header,index) in data" :key="index" @mouseover="mouseover(index)" @mouseout="mouseout">
+            <a>{{header}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="head-left" @click="next">&lt;&lt;</div>
+      <div class="head-right" @click="prev">&gt;&gt;</div>
+      <transition v-on:before-enter="beforeEnter" v-on:enter="enter" v-on:leave="leave">
+        <div class="fall-box">
+          <div class="fall-box-cont" @mouseout="mouseout">
+            <div v-for="(l2,index) in l2data" :key="index" class="fall-nav-l2">
+              <h3 class="l2title">
+                <div class="l2icon">
+                  <i class="icon iconfont icon-all">
+                  </i>
+                </div>{{l2.title}}
+              </h3>
+              <ul class="l2list">
+                <li class="l2item" v-for="(l3,index) in l3data" :key="index">
+                  <div class="item-main">
+                    <a v-if="l3.url">{{l3.title}}</a>
+                    <span v-else>{{l3.title}}</span>
                   </div>
-                </div>
-              </li>
-            </ul>
+                  <div class="item-sub">
+                    <div v-for="(l4,index) in l4data" :key="index">
+                      <a v-if="l4.url">{{l4.title}}</a>
+                      <span v-else>{{l4.title}}</span>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
+    <div class="popperplace"></div>
   </div>
-
 </template>
 <script>
+import PopperJs from 'popper.js'
 export default {
   name: 'FallMenu',
   computed: {
@@ -201,9 +205,15 @@ export default {
     mouseover(index) {
       this.index = index
       this.show = true
+      this.mypopper = new PopperJs(
+        document.querySelector('.fall-bar'),
+        document.querySelector('.fall-box'),
+        { placement: 'bottom' }
+      )
     },
     mouseout() {
       this.show = false
+      this.mypopper.destroy()
     },
     beforeEnter: function(el) {
       // el.style.opacity = 0
@@ -235,6 +245,7 @@ export default {
   },
   data() {
     return {
+      mypopper: null,
       l2data: [
         { title: '基础概要', icon: '' },
         { title: '过渡 & 动画', icon: '' },

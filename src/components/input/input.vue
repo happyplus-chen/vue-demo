@@ -9,9 +9,9 @@
     }
     ]" @mouseenter="hovering = true" @mouseleave="hovering = false">
 
-      <input class="el-input__inner" v-bind="$attrs" :type="type" :disabled="inputDisabled" :value="currentValue" ref="input" @input="handleInput" @focus="handleFocus" @blur="handleBlur" @change="handleChange" :aria-label="label">
+      <input class="el-input__inner" v-bind="$attrs" :type="type" :disabled="inputDisabled" :value="currentValue" ref="reference" @input="handleInput" @focus="handleFocus" @blur="handleBlur" @change="handleChange" :aria-label="label">
       <!-- 前置内容 -->
-      <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon" :style="prefixOffset">
+      <span class="el-input__prefix" v-if="$slots.prefix || prefixIcon">
         <slot name="prefix"></slot>
         <i class="el-input__icon" v-if="prefixIcon" :class="prefixIcon">
         </i>
@@ -31,8 +31,9 @@
       </span>
 
     </div>
+
     <div style="" v-show="show" ref='popper'>
-      <h1>123456</h1>
+      <h1>123412345612345612345656</h1>
     </div>
   </div>
 
@@ -176,8 +177,11 @@ export default {
     },
     suffixClick() {
       console.log(111)
-      this.show = !this.show
-      this.updatePopper()
+        this.show = !this.show
+      this.$nextTick(()=>{
+this.updatePopper()
+      })
+      // this.updatePopper()
     }
   },
 
@@ -191,9 +195,10 @@ export default {
   },
 
   mounted() {
-    this.popperElm = document.body
+    // this.reference = this.$refs.reference
+    this.reference = this.$el
     // this.referenceElm = this.$parent.$el
-    this.referenceElm = this.$refs.popper
+    this.popper = this.$refs.popper
   }
 }
 </script>
