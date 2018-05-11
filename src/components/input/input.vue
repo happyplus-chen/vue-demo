@@ -177,9 +177,9 @@ export default {
     },
     suffixClick() {
       console.log(111)
-        this.show = !this.show
-      this.$nextTick(()=>{
-this.updatePopper()
+      this.show = !this.show
+      this.$nextTick(() => {
+        this.updatePopper()
       })
       // this.updatePopper()
     }
