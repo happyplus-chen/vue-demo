@@ -8,6 +8,7 @@
          target="_blank"
          rel="noopener">vue-cli documentation</a>.
     </p>
+    <i-button type="primary">iview</i-button>
     <h3>Installed CLI Plugins</h3>
     <ul>
       <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
@@ -57,8 +58,12 @@
 </template>
 
 <script>
+import { Button } from 'iview'
 export default {
   name: 'HelloWorld',
+  components: {
+    iButton: Button
+  },
   props: {
     msg: String
   },
@@ -71,7 +76,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="less">
 h3 {
   margin: 40px 0 0;
 }
@@ -84,6 +89,6 @@ li {
   margin: 0 10px;
 }
 a {
-  color: #42b983;
+  color: @ui-primary;
 }
 </style>
