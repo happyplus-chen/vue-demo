@@ -15,5 +15,10 @@ module.exports = {
         path.resolve(__dirname, './src/theme/variables.less')
       ]
     }
+  },
+  configureWebpack: {
+    externals: {
+      'BMap': 'BMap'
+    }
   }
 }
