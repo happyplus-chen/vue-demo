@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo"
-         src="../assets/logo.png" />
+    <!-- <img alt="Vue logo"
+         src="../assets/logo.png" /> -->
     <!-- <HelloWorld
                 msg="Welcome to Your Vue.js App" /> -->
     <bMap  v-if="showbaidu" map-id="map1"></bMap>
@@ -11,7 +11,7 @@
 
 <script>
 // @ is an alias to /src
-// import bMap from './BaiduMap'
+import bMap from './BaiduMap'
 
 export default {
   name: 'home',
@@ -19,8 +19,9 @@ export default {
     return { showbaidu: false }
   },
   components: {
-    bMap: () =>
-      import(/* webpackChunkName: "baidumap" */ '@/views/BaiduMap.vue')
+    bMap
+    // bMap: () =>
+    //   import(/* webpackChunkName: "baidumap" */ '@/views/BaiduMap.vue')
   },
   mounted() {
     setTimeout(() => {

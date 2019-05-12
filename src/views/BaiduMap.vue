@@ -38,10 +38,14 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+    <el-popover ref="popover" placement="top" title="" width="200" trigger="hover" :content="popoverContent">
+    </el-popover>
+
   </div>
 </template>
 <script>
 // import BMap from 'BMap'
+import OverLayInitialize from './OverLayInitialize'
 export default {
   props: {
     mapId: {
@@ -61,22 +65,20 @@ export default {
       mapInstance: null,
       iconMap: {},
       BMap: null,
-
       food: [], // 美食
       traffic: [], // 交通
-
       attractions: [], // 景点
       shopping: [], // 购物
       entertainment: [], // 娱乐
       carrental: [], // 租车
-
       activeName: 'food',
       // 中心
       CPoint: null,
       // 酒店
       HPoint: null,
       // 其它
-      MPoint: null
+      MPoint: null,
+      popoverContent: ''
     }
   },
   watch: {
@@ -140,76 +142,52 @@ export default {
       let marker = (this.MPoint = new BMap.Marker(point))
       this.mapInstance.addOverlay(marker)
     },
-    addIcon(p1, p2, type) {
-      let BMap = window.BMap
-      let point = new BMap.Point(p1, p2)
+    addIcon(lng, lat, type, item) {
+      const BMap = this.BMap
+      const point = new BMap.Point(lng, lat)
+      const OverLayOpt = OverLayInitialize(this)
       // this.mapInstance.centerAndZoom(point, 16)
-      let vectorMarker = new BMap.Marker(point, {
-        // 指定Marker的icon属性为Symbol
-        // icon: new BMap.Symbol(window.BMap_Symbol_SHAPE_POINT, {
-        //   scale: 1.3, // 图标缩放大小
-        //   fillColor: 'orange', // 填充颜色
-        //   fillOpacity: 0.8// 填充透明度
-        // })
+      function ComplexCustomOverlay(point, text, mouseoverText) {
+        // this._popover = this.$refs.popover
+        this._point = point
+        this._text = text
+        this._overText = mouseoverText
+        this._type = type
+        this._item = item
+      }
+      ComplexCustomOverlay.prototype = new BMap.Overlay()
+      ComplexCustomOverlay.prototype.initialize = OverLayOpt.Initialize
+      ComplexCustomOverlay.prototype.draw = OverLayOpt.draw
+      let { title, address } = item
+      var mouseoverTxt = title + ' ' + address
 
-        icon: this.iconMap.loc_blue
-      })
-      // let label = new BMap.Label('我是文字标注哦', {
-      //   offset: new BMap.Size(15, 0)
-      // })
-
-      // label.setStyle({
-      //   color: '#237dff',
-      //   fontSize: '12px',
-      //   // height: '58px',
-      //   lineHeight: '20px',
-      //   fontFamily: '微软雅黑',
-      //   borderColor: '#237dff',
-      //   borderWidth: '2px',
-      //   borderRadius: '0 50px 50px 0',
-      //   padding: '0 10px 0 21px',
-      //   borderLeft: 'none',
-      //   zIndex: '-1'
-      // })
-      // vectorMarker.addEventListener('onmouseleave', function(target) {
-      //   let dom = target.currentTarget.V
-      //   dom.parentElement.style.zIndex = -6131935
-      //   console.log(target, 'point onmouseleave')
-      // })
-      // vectorMarker.addEventListener('mouseout', function(target) {
-      //   let dom = target.currentTarget.V
-      //   dom.parentElement.style.zIndex = -6131936
-      //   console.log(target)
-      // })
-      // label.addEventListener('mouseover', function(target) {
-      //   let dom = target.currentTarget.V
-      //   // dom.style.zIndex = 88
-      //   // let zidx = dom.parentElement.style.zIndex
-      //   dom.parentElement.style.zIndex = -6131935
-      //   console.log('label hover')
-      // })
-      // label.addEventListener('mouseout', function(target) {
-      //   let dom = target.currentTarget.V
-      //   dom.parentElement.style.zIndex = -6131936
-      //   // console.log('hover', target, dom)
-      // })
-      // vectorMarker.setLabel(label)
-      // vectorMarker.addEventListener('mouseover', function(target) {
-      //   let dom = target.currentTarget.V
-      //   dom.parentElement.style.zIndex = -6131935
-      //   console.log(target, 'point mouseover')
-      // })
-      this.mapInstance.addOverlay(vectorMarker)
+      var myCompOverlay = new ComplexCustomOverlay(point, type, mouseoverTxt)
+      this.mapInstance.addOverlay(myCompOverlay)
     },
     getDistance() {
       let p1 = new window.BMap.Point(104.075796, 30.659684)
       let p2 = new window.BMap.Point(104.075796, 30.679684)
       this.mapInstance.getDistance(p1, p2)
     },
-    searchLocal(kw) {
+    searchLocal(type) {
       const vm = this
+      const keyword = {
+        food: '美食',
+        traffic: '交通', // 交通
+        attractions: '公园', // 景点
+        shopping: '购物', // 购物
+        entertainment: '娱乐', // 娱乐
+        carrental: '租车' // 租车
+      }
+      const kw = keyword[type]
       return new Promise((resolve, reject) => {
+        // 数据查询完成后处理
         const onSearchComplete = function(result) {
+          vm[type] = result.Qq
+          result.Qq.forEach(item => {
+            let { lat, lng } = item.point
+            vm.addIcon(lng, lat, type, item)
+          })
           resolve(result)
         }
         const local = new this.BMap.LocalSearch(this.mapInstance, {
@@ -238,31 +216,14 @@ export default {
       })
     },
     handleClick({ name }) {
-      const keyword = {
-        food: '美食',
-        traffic: '交通', // 交通
-        attractions: '公园', // 景点
-        shopping: '购物', // 购物
-        entertainment: '娱乐', // 娱乐
-        carrental: '租车' // 租车
-      }
-      console.log(name)
       this.clearOverlays()
-      this.searchLocal(keyword[name]).then(data => {
-        console.log(data)
-        this[name] = data.Qq
-        data.Qq.forEach(item => {
-          let { lat, lng } = item.point
-          this.addIcon(lng, lat, name)
-        })
-      })
+      this.searchLocal(name).then(data => {})
     }
   },
   created() {},
   mounted() {
     window.vm = this
     this.loadScript('QGvYYZ13lrGhCNZBwXr1oYZGWCHmzdpn').then(BMap => {
-      console.log(BMap, this.mapId)
       this.BMap = BMap
       this.generateIcon()
       let map = (this.mapInstance = new BMap.Map(this.mapId))
@@ -278,6 +239,8 @@ export default {
       map.centerAndZoom(point, 16)
       var marker = new BMap.Marker(point)
       map.addOverlay(marker)
+      // 初始化时查询第一个标签数据
+      this.searchLocal('food')
     })
   }
 }
@@ -294,6 +257,42 @@ export default {
     .el-tabs__item {
       padding: 0 10px;
     }
+  }
+}
+</style>
+<style lang="less">
+.customOverlay {
+  .icon {
+    // color: #fff
+    width: 26px;
+    height: 26px;
+    cursor: pointer;
+    // background: url('~/static/markers.png');
+    background-color: red;
+    border-radius: 50%;
+    position: relative;
+    &::after {
+      position: absolute;
+      content: '';
+      width: 50%;
+      height: 50%;
+      background-color: red;
+      /*     transform: rotate(45deg) translate(-50%, -50%);
+        left: 50%;
+        top: 50%;*/
+      transform: rotate(45deg);
+      left: 25%;
+      top: 60%;
+    }
+  }
+  .text {
+    position: absolute;
+    top: -2px;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
   }
 }
 </style>
